@@ -7,6 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\media\Entity\Media;
 use Drupal\file\Entity\File;
+use Drupal\image\Entity\ImageStyle;
 
 /**
  * Provides the ASU footer block which deploys the component footer.
@@ -385,25 +386,10 @@ class AsuFooterBlock extends BlockBase {
       $file = File::load($fid);
       // Load main_image
       if ($file) {
-        $variables = array(
-          'responsive_image_style_id' => 'unit_logo',
-          'uri' => $file->getFileUri(),
-        );
-        // The image.factory service will check if our image is valid.
-        $image = \Drupal::service('image.factory')->get($file->getFileUri());
-        if ($image->isValid()) {
-          $variables['width'] = $image->getWidth();
-          $variables['height'] = $image->getHeight();
-        }
-        else {
-          $variables['width'] = $variables['height'] = NULL;
-        }
         $logo_build = [
-          '#theme' => 'responsive_image',
-          '#width' => $variables['width'],
-          '#height' => $variables['height'],
-          '#responsive_image_style_id' => $variables['responsive_image_style_id'],
-          '#uri' => $variables['uri'],
+          '#theme' => 'image_style',
+          '#style_name' => 'footer_logo',
+          '#uri' => $file->getFileUri(),
         ];
         // Add the file entity to the cache dependencies.
         // This will clear our cache when this entity updates.
