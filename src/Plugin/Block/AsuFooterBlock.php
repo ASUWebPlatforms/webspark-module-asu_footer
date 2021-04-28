@@ -37,9 +37,11 @@ class AsuFooterBlock extends BlockBase {
     $columns_data = [];
     //Columns data.
     foreach (static::ORDINAL_INDEX as $index) {
-      $column_data['title'] = $config['asu_footer_block_' . $index . '_title'];
-      $column_data['menu_items'] = $this->get_menu_column($config['asu_footer_block_menu_' . $index . '_column_name']);
-      $columns_data[] = $column_data;
+      if ($config['asu_footer_block_menu_' . $index . '_column_name'] != '_none') {
+        $column_data['title'] = $config['asu_footer_block_' . $index . '_title'];
+        $column_data['menu_items'] = $this->get_menu_column($config['asu_footer_block_menu_' . $index . '_column_name']);
+        $columns_data[] = $column_data;
+      }
     }
 
     return [
