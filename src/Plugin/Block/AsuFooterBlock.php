@@ -7,7 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\media\Entity\Media;
 use Drupal\file\Entity\File;
-use Drupal\image\Entity\ImageStyle;
+use Drupal\core\Url;
 
 /**
  * Provides the ASU footer block which deploys the component footer.
@@ -43,6 +43,26 @@ class AsuFooterBlock extends BlockBase {
         $columns_data[] = $column_data;
       }
     }
+    $facebook_url = '';
+    if (!empty($config['asu_footer_block_facebook_url'])) {
+      $facebook_url = Url::fromUri('https://www.facebook.com/' . $config['asu_footer_block_facebook_url']);
+    }
+    $twitter_url = '';
+   if (!empty($config['asu_footer_block_twitter_url'])) {
+      $twitter_url = Url::fromUri('https://twitter.com/' . $config['asu_footer_block_twitter_url']);
+    }
+    $linkedin_url = '';
+    if (!empty($config['asu_footer_block_linkedin_url'])) {
+      $linkedin_url = Url::fromUri('https://www.linkedin.com/' . $config['asu_footer_block_linkedin_url']);
+    }
+    $instagram_ulr = '';
+    if (!empty($config['asu_footer_block_instagram_url'])) {
+      $instagram_ulr = Url::fromUri('https://www.instagram.com/' . $config['asu_footer_block_instagram_url']);
+    }
+    $youtube_url = '';
+    if (!empty($config['asu_footer_block_youtube_url'])) {
+      $youtube_url = Url::fromUri('https://www.youtube.com/' . $config['asu_footer_block_youtube_url']);
+    }
 
     return [
       '#theme' => 'asu_footer__footer_block',
@@ -50,11 +70,11 @@ class AsuFooterBlock extends BlockBase {
       '#unit_custom_logo' => $unit_custom_logo,
       '#src_footer_img' => $src_footer_img,
       '#show_logo_social_media' => $config['asu_footer_block_show_logo_social_media'],
-      '#facebook_url' => $config['asu_footer_block_facebook_url'],
-      '#twitter_url' => $config['asu_footer_block_twitter_url'],
-      '#linkedin_url' => $config['asu_footer_block_linkedin_url'],
-      '#instagram_ulr' => $config['asu_footer_block_instagram_ulr'],
-      '#youtube_url' => $config['asu_footer_block_youtube_url'],
+      '#facebook_url' => $facebook_url,
+      '#twitter_url' => $twitter_url,
+      '#linkedin_url' => $linkedin_url,
+      '#instagram_ulr' => $instagram_ulr,
+      '#youtube_url' => $youtube_url,
       '#show_columns' => $config['asu_footer_block_show_columns'],
       '#unit_name' => $config['asu_footer_block_unit_name'],
       '#columns_data' => $columns_data,
@@ -134,12 +154,12 @@ class AsuFooterBlock extends BlockBase {
         ),
       ),
     ];
-    $form['asu_footer_block_instagram_ulr'] = [
+    $form['asu_footer_block_instagram_url'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Instagram Social Media'),
-      '#field_prefix' => 'https://www.youtube.com/',
+      '#field_prefix' => 'https://www.instagram.com/',
       '#size' => 40,
-      '#default_value' => $config['asu_footer_block_instagram_ulr'] ?? '',
+      '#default_value' => $config['asu_footer_block_instagram_url'] ?? '',
       '#states' => array(
         'visible' => array(
           ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => array(
@@ -151,7 +171,7 @@ class AsuFooterBlock extends BlockBase {
     $form['asu_footer_block_youtube_url'] = [
       '#type' => 'textfield',
       '#title' => $this->t('YouTube Social Media'),
-      '#field_prefix' => 'https://www.instagram.com/',
+      '#field_prefix' => 'https://www.youtube.com/',
       '#size' => 40,
       '#default_value' => $config['asu_footer_block_youtube_url'] ?? '',
       '#states' => array(
@@ -328,8 +348,8 @@ class AsuFooterBlock extends BlockBase {
       $values['asu_footer_block_twitter_url'];
     $this->configuration['asu_footer_block_linkedin_url'] =
       $values['asu_footer_block_linkedin_url'];
-    $this->configuration['asu_footer_block_instagram_ulr'] =
-      $values['asu_footer_block_instagram_ulr'];
+    $this->configuration['asu_footer_block_instagram_url'] =
+      $values['asu_footer_block_instagram_url'];
     $this->configuration['asu_footer_block_youtube_url'] =
       $values['asu_footer_block_youtube_url'];
     $this->configuration['asu_footer_block_show_columns'] =
