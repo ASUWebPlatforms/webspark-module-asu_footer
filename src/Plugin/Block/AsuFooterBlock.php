@@ -8,6 +8,7 @@ use Drupal\Core\Link;
 use Drupal\media\Entity\Media;
 use Drupal\file\Entity\File;
 use Drupal\core\Url;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Provides the ASU footer block which deploys the component footer.
@@ -35,12 +36,15 @@ class AsuFooterBlock extends BlockBase {
     $src_footer_img = base_path() . $path_module . '/img/GlobalFooter-No1InnovationLockup.png';
     $unit_custom_logo = $this->load_unit_logo($config['asu_footer_block_unit_logo']);
     $columns_data = [];
+    $cache_tags = [];
     //Columns data.
     foreach (static::ORDINAL_INDEX as $index) {
       if ($config['asu_footer_block_menu_' . $index . '_column_name'] != '_none') {
         $column_data['title'] = $config['asu_footer_block_' . $index . '_title'];
         $column_data['menu_items'] = $this->get_menu_column($config['asu_footer_block_menu_' . $index . '_column_name']);
         $columns_data[] = $column_data;
+        // Create a list of menu tags that we need to use to invalidate the cache on change.
+        $cache_tags[] = Cache::buildTags('config:system.menu', [$config['asu_footer_block_menu_' . $index . '_column_name']], '.');
       }
     }
     $facebook_url = '';
@@ -64,8 +68,20 @@ class AsuFooterBlock extends BlockBase {
       $youtube_url = Url::fromUri('https://www.youtube.com/' . $config['asu_footer_block_youtube_url']);
     }
 
+    // Merge all the tags.
+    $tags = $this->getCacheTags();
+    foreach ($cache_tags as $items) {
+      $tags = Cache::mergeTags($tags, $items);
+    }
+    $cache = [
+      'contexts' => $this->getCacheContexts(),
+      // Break cache when block or menus change.
+      'tags' => $tags,
+    ];
+    
     return [
       '#theme' => 'asu_footer__footer_block',
+      '#cache' => $cache,
       '#src_unit_logo' => $src_unit_logo,
       '#unit_custom_logo' => $unit_custom_logo,
       '#src_footer_img' => $src_footer_img,
@@ -85,6 +101,15 @@ class AsuFooterBlock extends BlockBase {
     ];
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheContexts() {
+    // TODO We should really only use the user context due to our current
+    // username fallback above, but that breaks the component for some reason.
+    return Cache::mergeContexts(parent::getCacheContexts(), ['user.roles']);
+  }
+  
   /**
    * {@inheritdoc}
    */
