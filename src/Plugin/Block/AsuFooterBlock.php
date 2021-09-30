@@ -33,7 +33,7 @@ class AsuFooterBlock extends BlockBase {
     $module_handler = \Drupal::service('module_handler');
     $path_module = $module_handler->getModule('asu_footer')->getPath();
     $src_unit_logo = base_path() . $path_module . '/img/ASU-EndorsedLogo.png';
-    $src_footer_img = base_path() . $path_module . '/img/GlobalFooter-No1InnovationLockup.png';
+    $src_footer_img = base_path() . $path_module . '/img/GlobalFooter-Number-1-in-the-us-for-innovation@2x.png';
     $unit_custom_logo = $this->load_unit_logo($config['asu_footer_block_unit_logo']);
     $columns_data = [];
     $cache_tags = [];
