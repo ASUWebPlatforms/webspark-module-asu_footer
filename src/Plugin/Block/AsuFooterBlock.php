@@ -78,8 +78,9 @@ class AsuFooterBlock extends BlockBase {
       // Break cache when block or menus change.
       'tags' => $tags,
     ];
-    
-    return [
+    $block_output = [];
+
+    $block_output = [
       '#theme' => 'asu_footer__footer_block',
       '#cache' => $cache,
       '#src_unit_logo' => $src_unit_logo,
@@ -99,6 +100,9 @@ class AsuFooterBlock extends BlockBase {
       '#cta_title' => $config['asu_footer_block_cta_title'],
       '#cta_url' => $config['asu_footer_block_cta_url'],
     ];
+
+    $block_output['#attached']['library'][] = 'asu_footer/footer-block';
+    return $block_output;
   }
 
   /**
