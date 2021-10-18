@@ -6,6 +6,7 @@ function asu_footer_theme($existing, $type, $theme, $path) {
       'variables' => [
         'src_unit_logo' => NULL,
         'unit_custom_logo' => NULL,
+        'unit_custom_logo_link' => NULL,
         'src_footer_img' => NULL,
         'show_logo_social_media' => NULL,
         'facebook_url' => NULL,
