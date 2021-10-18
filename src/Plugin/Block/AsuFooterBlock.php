@@ -34,7 +34,11 @@ class AsuFooterBlock extends BlockBase {
     $path_module = $module_handler->getModule('asu_footer')->getPath();
     $src_unit_logo = base_path() . $path_module . '/img/ASU-EndorsedLogo.png';
     $src_footer_img = base_path() . $path_module . '/img/GlobalFooter-Number-1-in-the-us-for-innovation@2x.png';
-    $unit_custom_logo = $this->load_unit_logo($config['asu_footer_block_unit_logo']);
+    $unit_custom_logo = $this->load_unit_logo($config['asu_footer_block_unit_logo_img']);
+    $unit_custom_logo_link = 'https://www.asu.edu';
+    if (!empty($config['asu_footer_block_logo_link_url'])) {
+      $unit_custom_logo_link = $config['asu_footer_block_logo_link_url'];
+    }
     $columns_data = [];
     $cache_tags = [];
     //Columns data.
@@ -79,12 +83,12 @@ class AsuFooterBlock extends BlockBase {
       'tags' => $tags,
     ];
     $block_output = [];
-
     $block_output = [
       '#theme' => 'asu_footer__footer_block',
       '#cache' => $cache,
       '#src_unit_logo' => $src_unit_logo,
       '#unit_custom_logo' => $unit_custom_logo,
+      '#unit_custom_logo_link' => $unit_custom_logo_link,
       '#src_footer_img' => $src_footer_img,
       '#show_logo_social_media' => $config['asu_footer_block_show_logo_social_media'],
       '#facebook_url' => $facebook_url,
@@ -129,17 +133,43 @@ class AsuFooterBlock extends BlockBase {
       '#default_value' => $config['asu_footer_block_show_logo_social_media'],
     ];
     $form['asu_footer_block_unit_logo'] = [
+      '#type' => 'details',
+      '#title' => t('Unit logo'),
+      '#open' => TRUE,
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
+    ];
+    $form['asu_footer_block_unit_logo']['asu_footer_block_unit_logo_img'] = [
       '#type' => 'media_library',
       '#allowed_bundles' => ['image'],
       '#title' => t('Upload Unit logo'),
-      '#default_value' => $config['asu_footer_block_unit_logo'] ?? '',
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => array(
+      '#default_value' => $config['asu_footer_block_unit_logo_img'] ?? '',
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
+    ];
+
+    $form['asu_footer_block_unit_logo']['asu_footer_block_logo_link_url'] = [
+      '#type' => 'textfield',
+      '#title'  => t('Logo URL'),
+      '#default_value' => $config['asu_footer_block_logo_link_url'] ?? '',
+      '#maxlength' => 60,
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
     $form['asu_footer_block_facebook_url'] = [
       '#type' => 'textfield',
@@ -147,13 +177,13 @@ class AsuFooterBlock extends BlockBase {
       '#field_prefix' => 'https://www.facebook.com/',
       '#size' => 40,
       '#default_value' => $config['asu_footer_block_facebook_url'] ?? '',
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
     ];
     $form['asu_footer_block_twitter_url'] = [
       '#type' => 'textfield',
@@ -161,13 +191,13 @@ class AsuFooterBlock extends BlockBase {
       '#field_prefix' => 'https://twitter.com/',
       '#size' => 40,
       '#default_value' => $config['asu_footer_block_twitter_url'] ?? '',
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
     ];
     $form['asu_footer_block_linkedin_url'] = [
       '#type' => 'textfield',
@@ -175,13 +205,13 @@ class AsuFooterBlock extends BlockBase {
       '#field_prefix' => 'https://www.linkedin.com/',
       '#size' => 40,
       '#default_value' => $config['asu_footer_block_linkedin_url'] ?? '',
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
     ];
     $form['asu_footer_block_instagram_url'] = [
       '#type' => 'textfield',
@@ -189,13 +219,13 @@ class AsuFooterBlock extends BlockBase {
       '#field_prefix' => 'https://www.instagram.com/',
       '#size' => 40,
       '#default_value' => $config['asu_footer_block_instagram_url'] ?? '',
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' =>[
             'checked' => TRUE,
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
     ];
     $form['asu_footer_block_youtube_url'] = [
       '#type' => 'textfield',
@@ -203,13 +233,13 @@ class AsuFooterBlock extends BlockBase {
       '#field_prefix' => 'https://www.youtube.com/',
       '#size' => 40,
       '#default_value' => $config['asu_footer_block_youtube_url'] ?? '',
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
     ];
 
     $form['asu_footer_block_show_columns'] = [
@@ -222,116 +252,116 @@ class AsuFooterBlock extends BlockBase {
       '#title' => $this->t('Name of Unit/School/College'),
       '#description' => $this->t('Site title to appear in the header.'),
       '#default_value' => $config['asu_footer_block_unit_name'] ?? '',
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_columns]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_columns]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-        'required' => array(
-          ':input[name="settings[asu_footer_block_show_columns]"]' => array(
+          ],
+        ],
+        'required' => [
+          ':input[name="settings[asu_footer_block_show_columns]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
     ];
-    $form['asu_footer_block_link'] = array(
+    $form['asu_footer_block_link'] = [
       '#type' => 'details',
       '#title' => t('Link'),
       '#open' => TRUE,
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_columns]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_columns]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
-    );
+          ],
+        ],
+      ],
+    ];
 
-    $form['asu_footer_block_link']['asu_footer_block_link_title'] = array(
+    $form['asu_footer_block_link']['asu_footer_block_link_title'] = [
       '#type' => 'textfield',
       '#title'  => t('Link Title'),
       '#default_value' => $config['asu_footer_block_link_title'] ?? '',
       '#maxlength' => 60,
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_columns]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_columns]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
-    );
+          ],
+        ],
+      ],
+    ];
 
-    $form['asu_footer_block_link']['asu_footer_block_link_url'] = array(
+    $form['asu_footer_block_link']['asu_footer_block_link_url'] = [
       '#type' => 'textfield',
       '#title'  => t('URL'),
       '#default_value' => $config['asu_footer_block_link_url'] ?? '',
       '#maxlength' => 60,
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_columns]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_columns]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
-    );
-    $form['asu_footer_block_cta'] = array(
+          ],
+        ],
+      ],
+    ];
+    $form['asu_footer_block_cta'] = [
       '#type' => 'details',
       '#title' => t('CTA'),
       '#open' => TRUE,
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_columns]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_columns]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
-    );
+          ],
+        ],
+      ],
+    ];
 
-    $form['asu_footer_block_cta']['asu_footer_block_cta_title'] = array(
+    $form['asu_footer_block_cta']['asu_footer_block_cta_title'] = [
       '#type' => 'textfield',
       '#title'  => t('CTA Title'),
       '#default_value' => $config['asu_footer_block_cta_title'] ?? '',
       '#maxlength' => 60,
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_columns]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_columns]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
-    );
+          ],
+        ],
+      ],
+    ];
 
-    $form['asu_footer_block_cta']['asu_footer_block_cta_url'] = array(
+    $form['asu_footer_block_cta']['asu_footer_block_cta_url'] = [
       '#type' => 'textfield',
       '#title'  => t('URL'),
       '#default_value' => $config['asu_footer_block_cta_url'] ?? '',
       '#maxlength' => 60,
-      '#states' => array(
-        'visible' => array(
-          ':input[name="settings[asu_footer_block_show_columns]"]' => array(
+      '#states' => [
+        'visible' => [
+          ':input[name="settings[asu_footer_block_show_columns]"]' => [
             'checked' => TRUE,
-          ),
-        ),
-      ),
-    );
+          ],
+        ],
+      ],
+    ];
 
     // Get system menu options.
     $menu_options = menu_ui_get_menus();
     foreach (static::ORDINAL_INDEX as $index) {
 
-      $form[$index . '_column'] = array(
+      $form[$index . '_column'] = [
         '#type' => 'details',
         '#title' => $this->t($index . ' Column menu'),
         '#open' => FALSE,
-        '#states' => array(
-          'visible' => array(
-            ':input[name="settings[asu_footer_block_show_columns]"]' => array(
+        '#states' => [
+          'visible' => [
+            ':input[name="settings[asu_footer_block_show_columns]"]' => [
               'checked' => TRUE,
-            ),
-          ),
-        ),
-      );
+            ],
+          ],
+        ],
+      ];
       $form[$index . '_column']['asu_footer_block_'. $index . '_title'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Title'),
@@ -345,13 +375,13 @@ class AsuFooterBlock extends BlockBase {
         '#empty_option' => t('- None -'),
         '#empty_value' => '_none',
         '#default_value' => $config['asu_footer_block_menu_' . $index . '_column_name'] ?? '',
-        '#states' => array(
-          'visible' => array(
-            ':input[name="settings[asu_footer_block_show_columns]"]' => array(
+        '#states' => [
+          'visible' => [
+            ':input[name="settings[asu_footer_block_show_columns]"]' => [
               'checked' => TRUE,
-            ),
-          ),
-        ),
+            ],
+          ],
+        ],
       ];
     }
 
@@ -365,8 +395,10 @@ class AsuFooterBlock extends BlockBase {
     parent::blockSubmit($form, $form_state);
 
     $values = $form_state->getValues();
-    $this->configuration['asu_footer_block_unit_logo'] =
-      $values['asu_footer_block_unit_logo'];
+    $this->configuration['asu_footer_block_unit_logo_img'] =
+      $values['asu_footer_block_unit_logo']['asu_footer_block_unit_logo_img'];
+    $this->configuration['asu_footer_block_logo_link_url'] =
+      $values['asu_footer_block_unit_logo']['asu_footer_block_logo_link_url'];
     $this->configuration['asu_footer_block_unit_name'] =
       $values['asu_footer_block_unit_name'];
     $this->configuration['asu_footer_block_show_logo_social_media'] =
