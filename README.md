@@ -2,7 +2,7 @@
 
 ## Description 
 
-The ASU Footer module provides a custom block plugin specific for the ASU.
+The ASU Footer module provides a custom block plugin specific for the ASU Footer.
 
 ## Requirements
 
