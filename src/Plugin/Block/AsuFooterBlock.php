@@ -34,7 +34,9 @@ class AsuFooterBlock extends BlockBase {
     $path_module = $module_handler->getModule('asu_footer')->getPath();
     $src_unit_logo = base_path() . $path_module . '/img/ASU-EndorsedLogo.png';
     $src_footer_img = base_path() . $path_module . '/img/GlobalFooter-Number-1-in-the-us-for-innovation@2x.png';
-    $unit_custom_logo = $this->load_unit_logo($config['asu_footer_block_unit_logo_img']);
+    if (!empty($config['asu_footer_block_unit_logo_img'])) {
+      $unit_custom_logo = $this->load_unit_logo($config['asu_footer_block_unit_logo_img']);
+    }
     $unit_custom_logo_link = 'https://www.asu.edu';
     if (!empty($config['asu_footer_block_logo_link_url'])) {
       $unit_custom_logo_link = $config['asu_footer_block_logo_link_url'];
@@ -87,7 +89,7 @@ class AsuFooterBlock extends BlockBase {
       '#theme' => 'asu_footer__footer_block',
       '#cache' => $cache,
       '#src_unit_logo' => $src_unit_logo,
-      '#unit_custom_logo' => $unit_custom_logo,
+      '#unit_custom_logo' => $unit_custom_logo ?? '',
       '#unit_custom_logo_link' => $unit_custom_logo_link,
       '#src_footer_img' => $src_footer_img,
       '#show_logo_social_media' => $config['asu_footer_block_show_logo_social_media'],
