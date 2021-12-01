@@ -54,7 +54,7 @@ class AsuFooterBlock extends BlockBase {
         $title_id = $this->getFieldId($index, $stack_id, 'title');
         $menu_id = $this->getFieldId($index, $stack_id);
 
-        if ($config[$menu_id] != '_none') {
+        if (!empty($config[$menu_id]) && $config[$menu_id] != '_none') {
           $buf['title'] = $config[$title_id];
           $buf['menu_items'] = $this->get_menu_column($config[$menu_id]);
           $columns_data[$index][] = $buf;
