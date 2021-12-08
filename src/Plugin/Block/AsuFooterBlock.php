@@ -24,6 +24,11 @@ class AsuFooterBlock extends BlockBase {
   const ORDINAL_INDEX = ['second', 'third', 'fourth', 'fifth', 'sixth'];
 
   /**
+   * The total number of stacked menus in a column.
+   */
+  const STACKED_MENUS = 3;
+
+  /**
    * {@inheritdoc}
    */
   public function build() {
@@ -45,14 +50,22 @@ class AsuFooterBlock extends BlockBase {
     $cache_tags = [];
     //Columns data.
     foreach (static::ORDINAL_INDEX as $index) {
-      if ($config['asu_footer_block_menu_' . $index . '_column_name'] != '_none') {
-        $column_data['title'] = $config['asu_footer_block_' . $index . '_title'];
-        $column_data['menu_items'] = $this->get_menu_column($config['asu_footer_block_menu_' . $index . '_column_name']);
-        $columns_data[] = $column_data;
-        // Create a list of menu tags that we need to use to invalidate the cache on change.
-        $cache_tags[] = Cache::buildTags('config:system.menu', [$config['asu_footer_block_menu_' . $index . '_column_name']], '.');
+      foreach (range(1, static::STACKED_MENUS) as $stack_id) {
+        $title_id = $this->getFieldId($index, $stack_id, 'title');
+        $menu_id = $this->getFieldId($index, $stack_id);
+
+        if (!empty($config[$menu_id]) && $config[$menu_id] != '_none') {
+          $buf['title'] = $config[$title_id];
+          $buf['menu_items'] = $this->get_menu_column($config[$menu_id]);
+          $columns_data[$index][] = $buf;
+          // Create a list of menu tags that we need to use to invalidate the cache on change.
+          $cache_tags[] = Cache::buildTags('config:system.menu', [
+            $config[$menu_id]
+          ], '.');
+        }
       }
     }
+
     $facebook_url = '';
     if (!empty($config['asu_footer_block_facebook_url'])) {
       $facebook_url = Url::fromUri('https://www.facebook.com/' . $config['asu_footer_block_facebook_url']);
@@ -119,7 +132,7 @@ class AsuFooterBlock extends BlockBase {
     // username fallback above, but that breaks the component for some reason.
     return Cache::mergeContexts(parent::getCacheContexts(), ['user.roles']);
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -364,27 +377,34 @@ class AsuFooterBlock extends BlockBase {
           ],
         ],
       ];
-      $form[$index . '_column']['asu_footer_block_'. $index . '_title'] = [
-        '#type' => 'textfield',
-        '#title' => $this->t('Title'),
-        '#default_value' => $config['asu_footer_block_' . $index . '_title'] ?? ''
-      ];
-      $form[$index . '_column']['asu_footer_block_menu_' . $index . '_column_name'] = [
-        '#type' => 'select',
-        '#title' => $this->t('Menu to insert in ' . $index . ' column'),
-        '#description' => $this->t('Select the menu to insert.'),
-        '#options' => $menu_options,
-        '#empty_option' => t('- None -'),
-        '#empty_value' => '_none',
-        '#default_value' => $config['asu_footer_block_menu_' . $index . '_column_name'] ?? '',
-        '#states' => [
-          'visible' => [
-            ':input[name="settings[asu_footer_block_show_columns]"]' => [
-              'checked' => TRUE,
+
+      foreach (range(1, static::STACKED_MENUS) as $stack_id) {
+        $title_id = $this->getFieldId($index, $stack_id, 'title');
+        $menu_id = $this->getFieldId($index, $stack_id);
+
+        $form[$index . '_column'][$title_id] = [
+          '#type' => 'textfield',
+          '#title' => $this->t('Title'),
+          '#default_value' => $config[$title_id] ?? ''
+        ];
+
+        $form[$index . '_column'][$menu_id] = [
+          '#type' => 'select',
+          '#title' => $this->t('Menu to insert in ' . $index . ' column'),
+          '#description' => $this->t('Select the menu to insert.'),
+          '#options' => $menu_options,
+          '#empty_option' => t('- None -'),
+          '#empty_value' => '_none',
+          '#default_value' => $config[$menu_id] ?? '',
+          '#states' => [
+            'visible' => [
+              ':input[name="settings[asu_footer_block_show_columns]"]' => [
+                'checked' => TRUE,
+              ],
             ],
           ],
-        ],
-      ];
+        ];
+      }
     }
 
     return $form;
@@ -427,10 +447,13 @@ class AsuFooterBlock extends BlockBase {
      $values['asu_footer_block_cta']['asu_footer_block_cta_url'];
 
     foreach (static::ORDINAL_INDEX as $index) {
-      $this->configuration['asu_footer_block_' . $index . '_title'] =
-        $values[$index . '_column']['asu_footer_block_' . $index . '_title'];
-      $this->configuration['asu_footer_block_menu_' . $index . '_column_name'] =
-        $values[$index . '_column']['asu_footer_block_menu_' . $index . '_column_name'];
+      foreach (range(1, static::STACKED_MENUS) as $stack_id) {
+        $title_id = $this->getFieldId($index, $stack_id, 'title');
+        $menu_id = $this->getFieldId($index, $stack_id);
+
+        $this->configuration[$title_id] = $values[$index . '_column'][$title_id];
+        $this->configuration[$menu_id] = $values[$index . '_column'][$menu_id];
+      }
     }
   }
 
@@ -486,5 +509,32 @@ class AsuFooterBlock extends BlockBase {
       }
     }
     return NULL;
+  }
+
+  /**
+   * Generates a field id.
+   *
+   * @param string $index_str
+   *   The index string.
+   * @param int $index
+   *   The index number.
+   * @param string $type
+   *   The field type
+   *
+   * @return string
+   *   The field id.
+   */
+  protected function getFieldId(string $index_str, int $index, string $type = ''): string {
+    $elements = [
+      ($type == 'title') ? 'asu_footer_block' : 'asu_footer_block_menu',
+      $index_str,
+      ($type == 'title') ? 'title' : 'column_name',
+    ];
+
+    if ($index > 1) {
+      $elements[] = $index;
+    }
+
+    return implode('_', $elements);
   }
 }
