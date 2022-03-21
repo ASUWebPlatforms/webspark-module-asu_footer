@@ -477,7 +477,14 @@ class AsuFooterBlock extends BlockBase {
       $title = $item->link->getTitle();
       $url = $item->link->getUrlObject();
       $link = Link::fromTextAndUrl($title, $url)->toRenderable();
-      $link['#attributes'] = ['class' => 'nav-link'];
+      $link['#attributes'] = [
+        'class' => 'nav-link',
+        'data-ga-footer-type' => 'internal link',
+        'data-ga-footer-region' => 'footer',
+        'data-ga-footer-section' => 'primary footer',
+        'data-ga-footer' => $title,
+        'data-ga-footer-component' => 'column header'
+      ];
       $item = [
         '#markup' => render($link),
       ];
