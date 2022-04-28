@@ -177,7 +177,6 @@ class AsuFooterBlock extends BlockBase {
       '#type' => 'textfield',
       '#title'  => t('Logo URL'),
       '#default_value' => $config['asu_footer_block_logo_link_url'] ?? '',
-      '#maxlength' => 60,
       '#states' => [
         'visible' => [
           ':input[name="settings[asu_footer_block_show_logo_social_media]"]' => [
@@ -311,7 +310,6 @@ class AsuFooterBlock extends BlockBase {
       '#type' => 'textfield',
       '#title'  => t('URL'),
       '#default_value' => $config['asu_footer_block_link_url'] ?? '',
-      '#maxlength' => 60,
       '#states' => [
         'visible' => [
           ':input[name="settings[asu_footer_block_show_columns]"]' => [
@@ -351,7 +349,6 @@ class AsuFooterBlock extends BlockBase {
       '#type' => 'textfield',
       '#title'  => t('URL'),
       '#default_value' => $config['asu_footer_block_cta_url'] ?? '',
-      '#maxlength' => 60,
       '#states' => [
         'visible' => [
           ':input[name="settings[asu_footer_block_show_columns]"]' => [
