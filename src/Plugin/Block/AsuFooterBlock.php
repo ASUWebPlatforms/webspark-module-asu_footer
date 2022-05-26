@@ -480,7 +480,7 @@ class AsuFooterBlock extends BlockBase {
         'data-ga-footer-region' => 'footer',
         'data-ga-footer-section' => 'primary footer',
         'data-ga-footer' => $title,
-        'data-ga-footer-component' => 'column header'
+        'data-component-replace' => ''
       ];
       $item = [
         '#markup' => render($link),
