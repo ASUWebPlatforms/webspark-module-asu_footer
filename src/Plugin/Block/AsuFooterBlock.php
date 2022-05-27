@@ -473,21 +473,10 @@ class AsuFooterBlock extends BlockBase {
     foreach ($tree as $item) {
       $title = $item->link->getTitle();
       $url = $item->link->getUrlObject();
-      $link = Link::fromTextAndUrl($title, $url)->toRenderable();
-      $link['#attributes'] = [
-        'class' => 'nav-link',
-        'data-ga-footer-type' => 'internal link',
-        'data-ga-footer-region' => 'footer',
-        'data-ga-footer-section' => 'primary footer',
-        'data-ga-footer' => $title,
-        'data-component-replace' => ''
-      ];
-      $item = [
-        '#markup' => render($link),
-      ];
-      $menu_items[] = $item;
+      // Send url and title to twig file for rendering
+      $menu_items[] = array($url, $title);
     }
-
+    
     return $menu_items;
   }
 
