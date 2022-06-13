@@ -359,7 +359,8 @@ class AsuFooterBlock extends BlockBase {
     ];
 
     // Get system menu options.
-    $menu_options = menu_ui_get_menus();
+    $menu_options = array_map(function ($menu) { return $menu->label(); }, \Drupal\system\Entity\Menu::loadMultiple());
+    asort($menu_options);
     foreach (static::ORDINAL_INDEX as $index) {
 
       $form[$index . '_column'] = [
