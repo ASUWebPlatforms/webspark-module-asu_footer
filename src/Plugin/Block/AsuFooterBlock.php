@@ -373,15 +373,9 @@ class AsuFooterBlock extends BlockBase {
               'checked' => TRUE,
             ],
           ],
-          // 'expanded' => [
-          //   ":input[name='settings[{$index}_column][asu_footer_block_{$index}_title{$name_suffix}]']" => [
-          //     'invalid' => true,
-          //   ],
-          // ],
         ],
       ];
 
-      // Changes made for WS2-1380
       foreach (range(1, static::STACKED_MENUS) as $stack_id) {
         $menu_id = $this->getFieldId($index, $stack_id);
         $title_id = $this->getFieldId($index, $stack_id, 'title');
