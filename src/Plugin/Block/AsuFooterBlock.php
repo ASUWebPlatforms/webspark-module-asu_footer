@@ -366,25 +366,26 @@ class AsuFooterBlock extends BlockBase {
       $form[$index . '_column'] = [
         '#type' => 'details',
         '#title' => $this->t($index . ' Column menu'),
-        '#open' => FALSE,
+        '#open' => true,
         '#states' => [
           'visible' => [
             ':input[name="settings[asu_footer_block_show_columns]"]' => [
               'checked' => TRUE,
             ],
           ],
+          // 'expanded' => [
+          //   ":input[name='settings[{$index}_column][asu_footer_block_{$index}_title{$name_suffix}]']" => [
+          //     'invalid' => true,
+          //   ],
+          // ],
         ],
       ];
 
+      // Changes made for WS2-1380
       foreach (range(1, static::STACKED_MENUS) as $stack_id) {
-        $title_id = $this->getFieldId($index, $stack_id, 'title');
         $menu_id = $this->getFieldId($index, $stack_id);
-
-        $form[$index . '_column'][$title_id] = [
-          '#type' => 'textfield',
-          '#title' => $this->t('Title'),
-          '#default_value' => $config[$title_id] ?? ''
-        ];
+        $title_id = $this->getFieldId($index, $stack_id, 'title');
+        $name_suffix = $stack_id > 1 ? "_$stack_id" : '';
 
         $form[$index . '_column'][$menu_id] = [
           '#type' => 'select',
@@ -401,6 +402,22 @@ class AsuFooterBlock extends BlockBase {
               ],
             ],
           ],
+        ];
+
+        $form[$index . '_column'][$title_id] = [
+          '#type' => 'textfield',
+          '#title' => $this->t('Menu title'),
+          '#default_value' => $config[$title_id] ?? '',
+          '#required' => true,
+          '#description' => $this->t('Leaving this blank will prevent the form from submitting.'),
+          '#states' => [
+            'visible' => [
+              ":input[name='settings[{$index}_column][asu_footer_block_menu_{$index}_column_name{$name_suffix}]']" => ['!value' => '_none'],
+            ],
+            'disabled' => [
+              ":input[name='settings[{$index}_column][asu_footer_block_menu_{$index}_column_name{$name_suffix}]']" => ['value' => '_none'],
+            ],
+          ]
         ];
       }
     }
@@ -477,7 +494,7 @@ class AsuFooterBlock extends BlockBase {
       // Send url and title to twig file for rendering
       $menu_items[] = array($url, $title);
     }
-    
+
     return $menu_items;
   }
 
