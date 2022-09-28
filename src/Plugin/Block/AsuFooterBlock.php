@@ -407,14 +407,8 @@ class AsuFooterBlock extends BlockBase {
             'visible' => [
               ":input[name='settings[{$index}_column][asu_footer_block_menu_{$index}_column_name{$name_suffix}]']" => ['!value' => '_none'],
             ],
-            'disabled' => [
-              ":input[name='settings[{$index}_column][asu_footer_block_menu_{$index}_column_name{$name_suffix}]']" => ['value' => '_none'],
-              ':input[name="settings[asu_footer_block_show_columns]"]' => ['checked' => false],
-            ],
             'required' => [
-              ':input[name="settings[asu_footer_block_show_columns]"]' => [
-                'checked' => true,
-              ],
+              ":input[name='settings[{$index}_column][asu_footer_block_menu_{$index}_column_name{$name_suffix}]']" => ['!value' => '_none'],
             ],
           ]
         ];
