@@ -402,7 +402,6 @@ class AsuFooterBlock extends BlockBase {
           '#type' => 'textfield',
           '#title' => $this->t('Menu title'),
           '#default_value' => $config[$title_id] ?? '',
-          '#required' => true,
           '#description' => $this->t('Leaving this blank will prevent the form from submitting.'),
           '#states' => [
             'visible' => [
@@ -410,6 +409,12 @@ class AsuFooterBlock extends BlockBase {
             ],
             'disabled' => [
               ":input[name='settings[{$index}_column][asu_footer_block_menu_{$index}_column_name{$name_suffix}]']" => ['value' => '_none'],
+              ':input[name="settings[asu_footer_block_show_columns]"]' => ['checked' => false],
+            ],
+            'required' => [
+              ':input[name="settings[asu_footer_block_show_columns]"]' => [
+                'checked' => true,
+              ],
             ],
           ]
         ];
