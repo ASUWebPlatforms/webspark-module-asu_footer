@@ -402,14 +402,13 @@ class AsuFooterBlock extends BlockBase {
           '#type' => 'textfield',
           '#title' => $this->t('Menu title'),
           '#default_value' => $config[$title_id] ?? '',
-          '#required' => true,
           '#description' => $this->t('Leaving this blank will prevent the form from submitting.'),
           '#states' => [
             'visible' => [
               ":input[name='settings[{$index}_column][asu_footer_block_menu_{$index}_column_name{$name_suffix}]']" => ['!value' => '_none'],
             ],
-            'disabled' => [
-              ":input[name='settings[{$index}_column][asu_footer_block_menu_{$index}_column_name{$name_suffix}]']" => ['value' => '_none'],
+            'required' => [
+              ":input[name='settings[{$index}_column][asu_footer_block_menu_{$index}_column_name{$name_suffix}]']" => ['!value' => '_none'],
             ],
           ]
         ];
