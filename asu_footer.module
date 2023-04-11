@@ -5,9 +5,13 @@ function asu_footer_theme($existing, $type, $theme, $path) {
     'asu_footer__footer_block' => [
       'variables' => [
         'src_unit_logo' => NULL,
+        'src_unit_logo_width' => NULL,
+        'src_unit_logo_height' => NULL,
         'unit_custom_logo' => NULL,
         'unit_custom_logo_link' => NULL,
         'src_footer_img' => NULL,
+        'src_footer_img_width' => NULL,
+        'src_footer_img_height' => NULL,
         'show_logo_social_media' => NULL,
         'facebook_url' => NULL,
         'twitter_url' => NULL,

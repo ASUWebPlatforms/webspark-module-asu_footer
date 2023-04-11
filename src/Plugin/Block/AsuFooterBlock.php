@@ -9,6 +9,7 @@ use Drupal\media\Entity\Media;
 use Drupal\file\Entity\File;
 use Drupal\core\Url;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\File\FileSystemInterface;
 
 /**
  * Provides the ASU footer block which deploys the component footer.
@@ -35,10 +36,15 @@ class AsuFooterBlock extends BlockBase {
     $config = $this->getConfiguration();
 
     //Default images.
+
     $module_handler = \Drupal::service('module_handler');
     $path_module = $module_handler->getModule('asu_footer')->getPath();
-    $src_unit_logo = base_path() . $path_module . '/img/ASU-EndorsedLogo.png';
-    $src_footer_img = base_path() . $path_module . '/img/200420-GlobalFooter-No1InnovationLockup.png';
+    $src_unit_logo = '/' . $path_module . '/img/ASU-EndorsedLogo.png';
+    $src_unit_logo_internal = $path_module . '/img/ASU-EndorsedLogo.png';
+    list($src_unit_logo_width, $src_unit_logo_height) = getimagesize($src_unit_logo_internal);
+    $src_footer_img = '/' . $path_module . '/img/200420-GlobalFooter-No1InnovationLockup.png';
+    $src_footer_img_internal = $path_module . '/img/200420-GlobalFooter-No1InnovationLockup.png';
+    list($src_footer_img_width, $src_footer_img_height) = getimagesize($src_footer_img_internal);
     if (!empty($config['asu_footer_block_unit_logo_img'])) {
       $unit_custom_logo = $this->load_unit_logo($config['asu_footer_block_unit_logo_img']);
     }
@@ -102,9 +108,13 @@ class AsuFooterBlock extends BlockBase {
       '#theme' => 'asu_footer__footer_block',
       '#cache' => $cache,
       '#src_unit_logo' => $src_unit_logo,
+      '#src_unit_logo_width' => $src_unit_logo_width,
+      '#src_unit_logo_height' => $src_unit_logo_height,
       '#unit_custom_logo' => $unit_custom_logo ?? '',
       '#unit_custom_logo_link' => $unit_custom_logo_link,
       '#src_footer_img' => $src_footer_img,
+      '#src_footer_img_width' => $src_footer_img_width,
+      '#src_footer_img_height' => $src_footer_img_height,
       '#show_logo_social_media' => $config['asu_footer_block_show_logo_social_media'],
       '#facebook_url' => $facebook_url,
       '#twitter_url' => $twitter_url,
@@ -495,6 +505,7 @@ class AsuFooterBlock extends BlockBase {
     if ($mid) {
       $media = Media::load($mid);
       $fid = $media->field_media_image->target_id;
+      $alt = $media->field_media_image->alt;
       $file = File::load($fid);
       // Load main_image
       if ($file) {
@@ -502,6 +513,7 @@ class AsuFooterBlock extends BlockBase {
           '#theme' => 'image_style',
           '#style_name' => 'footer_logo',
           '#uri' => $file->getFileUri(),
+          '#alt' => $alt,
         ];
         // Add the file entity to the cache dependencies.
         // This will clear our cache when this entity updates.
